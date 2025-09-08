@@ -5,9 +5,14 @@
 __pycache__
 db.sqlite3
 media
+__pycache__/
+
+staticfiles/
 
 # Backup files #
 *.bak
+.DS_Store
+Thumbs.db
 
 # If you are using PyCharm #
 # User-specific stuff
@@ -72,6 +77,8 @@ wheels/
 # Installer logs
 pip-log.txt
 pip-delete-this-directory.txt
+logs/
+*.pid
 
 # Unit test / coverage reports
 htmlcov/
@@ -141,3 +148,4 @@ GitHub.sublime-settings
 media/
 .idea/
 .vscode/
+settings_local.py

@@ -1,0 +1,39 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>To-Do List</title>
+  <link rel="stylesheet" href="{% static 'app/style.css' %}">
+</head>
+<body>
+  <div class="container">
+    <h1>Create Account</h1>
+    <div class="input-container">
+        <form method="post" action="{% url 'app:signup' %}">
+            {% csrf_token %}
+            {% if form.errors %}
+              <div class="errors" style="color: red; text-align: left;">
+                {{ form.errors }}
+              </div>
+            {% endif %}
+            <label for="username" class="sr-only"></label>
+            <input type="text" name="username" placeholder="Username" id="username" required>
+
+            <label for="password1" class="sr-only"></label>
+            <input type="password" placeholder="Password" id="password1" name="password1" required>
+
+            <label for="password2" class="sr-only"></label>
+            <input type="password" placeholder="Confirm Password" id="password2" name="password2" required>
+
+            <label for="bio" class="sr-only"></label>
+            <input type="text" placeholder="bio" id="bio" name="bio" required>
+            <p>_____________________________</p>
+            <button type="submit" class="signup">Sign up</button>
+        </form>
+    </div>
+  </div>
+  <script src="../../static/app/script.js"></script>
+</body>
+</html>

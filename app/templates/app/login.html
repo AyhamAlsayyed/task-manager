@@ -1,0 +1,30 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>To-Do List</title>
+  <link rel="stylesheet" href="{% static 'app/style.css' %}">
+</head>
+<body>
+  <div class="container">
+    <h1>Task manager</h1>
+    <div class="input-container">
+        <form method="post" action="{% url 'app:login' %}">
+            {% csrf_token %}
+            {% if error_message %}<p class="error_message" style="color:red; font-weight:bold;">{{ error_message }}</p>{% endif %}
+            <label for="username" class="sr-only"></label>
+            <input type="text" placeholder="UserName" id="username" name="username" required>
+            <label for="password" class="sr-only"></label>
+            <input type="password" placeholder="Password" id="password" name="password" required>
+            <div class="login"><button type="submit">Log In</button></div>
+        </form>
+      <a href="">Forgot password</a>
+      <p>_____________________________</p>
+      <a href="{% url 'app:signup' %}" class="signup">Sign up</a>
+    </div>
+  </div>
+  <script src="../../static/app/script.js"></script>
+</body>
+</html>
