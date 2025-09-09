@@ -1,4 +1,4 @@
-from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth import login, logout
 from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
 from django.shortcuts import redirect, render
 
@@ -43,4 +43,12 @@ def signup_view(request):
 
 def logout_view(request):
     logout(request)
-    return redirect("login")
+    return redirect("app:home")
+
+
+def dashboard_view(request):
+    return render(request, "app/dashboard.html")
+
+
+def profile_view(request):
+    return render(request, "app/profile.html")
