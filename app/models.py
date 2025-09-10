@@ -6,7 +6,7 @@ from django.db import models
 
 class UserProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    avatar = models.ImageField(blank=True, null=True, upload_to="avatars/")
+    avatar = models.ImageField(blank=True, null=True, upload_to="avatars/", default="avatars/default.png")
     bio = models.TextField(blank=True, null=True)
 
     def __str__(self):

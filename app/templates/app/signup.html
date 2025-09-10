@@ -5,7 +5,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>To-Do List</title>
-  <link rel="stylesheet" href="{% static 'app/style.css' %}">
+  <link rel="stylesheet" href="{% static 'app/styleLS.css' %}">
 </head>
 <body>
   <div class="container">
@@ -28,12 +28,12 @@
             <input type="password" placeholder="Confirm Password" id="password2" name="password2" required>
 
             <label for="bio" class="sr-only"></label>
-            <input type="text" placeholder="bio" id="bio" name="bio" required>
+            <input type="text" placeholder="bio" id="bio" name="bio">
+            <a href="{% url 'app:login' %}" style="color:darkorange;">Already have an account?</a>
             <p>_____________________________</p>
             <button type="submit" class="signup">Sign up</button>
         </form>
     </div>
   </div>
-  <script src="../../static/app/script.js"></script>
 </body>
 </html>

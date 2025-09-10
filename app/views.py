@@ -1,4 +1,4 @@
-from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth import login, logout
 from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
 from django.shortcuts import redirect, render
 
@@ -43,4 +43,35 @@ def signup_view(request):
 
 def logout_view(request):
     logout(request)
-    return redirect("login")
+    return redirect("app:home")
+
+
+def dashboard_view(request):
+    return render(request, "app/dashboard.html")
+
+
+def profile_view(request):
+    return render(request, "app/profile.html")
+
+
+def edit_profile_view(request):
+    user = request.user
+    profile = user.userprofile
+
+    if request.method == "POST":
+        avatar = request.FILES.get("avatar")
+
+        user.username = request.POST.get("username")
+        user.email = request.POST.get("email")
+        user.save()
+
+        profile.bio = request.POST.get("bio")
+
+        avatar = request.FILES.get("avatar")
+        if avatar:
+            profile.avatar = avatar
+        profile.save()
+
+        return redirect("app:profile")
+
+    return render(request, "app/profile.html")
