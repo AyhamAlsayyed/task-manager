@@ -1,15 +1,160 @@
+{% load static %}
 <!doctype html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport"
-          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Document</title>
-</head>
-<body>
-    profile
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            background-color: rgb(244, 246, 248);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
 
-    <a href="{% url 'app:logout' %}">logout</a>
+        .profile-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .profile-card {
+            background-color: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            width: 360px;
+        }
+
+        .avatar {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-bottom: 15px;
+            border: 2px solid orange;
+        }
+
+        .test {
+            display: flex;
+            flex-direction: column;
+            margin-bottom: 15px;
+            text-align: left;
+        }
+
+        .test input {
+            width: 100%;
+            padding: 10px;
+            border-radius: 8px;
+            border: 2px solid lightgray;
+            font-size: 16px;
+            transition: 0.3s;
+        }
+
+        .test input:focus {
+            border-color: orange;
+            outline: none;
+            box-shadow: 0 0 5px rgba(255, 165, 0, 0.5);
+        }
+
+        .profile-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .profile-actions button,
+        .profile-actions .logout {
+            padding: 10px;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+            text-decoration: none;
+            text-align: center;
+            transition: 0.3s;
+        }
+
+        .profile-actions button {
+            background-color: orange;
+            color: white;
+            border: none;
+        }
+
+        .profile-actions button:hover {
+            background-color: darkorange;
+        }
+
+        .profile-actions .logout {
+            background-color: rgb(51, 51, 51);
+            color: white;
+            border: none;
+            display: block;
+        }
+
+        .profile-actions .logout:hover {
+            background-color: rgb(30, 30, 30);
+        }
+
+        .sr-only {
+          position: absolute;
+          width: 1px;
+          height: 1px;
+          padding: 0;
+          margin: -1px;
+          overflow: hidden;
+          clip: rect(0, 0, 0, 0);
+          border: 0;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="profile-container">
+        <form method="POST" action="{% url 'app:edit_profile' %} " class="profile-card" enctype="multipart/form-data">
+            {% csrf_token %}
+
+            {% if user.userprofile.avatar %}
+                <img src="{{ user.userprofile.avatar.url }}" alt="Profile Picture" class="avatar">
+            {% else %}
+                <img src="{% static 'default.png' %}" alt="Default Avatar" class="avatar">
+            {% endif %}
+
+            <div class="test">
+                <input type="text" id="username" name="username" value="{{ user.username }}">
+            </div>
+            <div class="test">
+                {% if user.email %}
+                    <input type="email" id="email" name="email" value="{{ user.email }}">
+                {% else %}
+                    <label for="email" class="sr-only"></label>
+                    <input type="email" id="email" name="email" placeholder="Email">
+                {% endif %}
+
+            </div>
+            <div class="test">
+                {% if user.userprofile.bio %}
+                    <input type="text" id="bio" name="bio" value="{{ user.userprofile.bio }}">
+                {% else %}
+                    <label for="bio" class="sr-only"></label>
+                    <input type="text" id="bio" name="bio" placeholder="bio">
+                {% endif %}
+            </div>
+            <div class="test">
+                <input type="file" id="avatar" name="avatar">
+            </div>
+
+            <div class="profile-actions">
+                <button type="submit">Save Changes</button>
+                <a href="{% url 'app:logout' %}" class="logout">Logout</a>
+            </div>
+        </form>
+    </div>
 </body>
 </html>
