@@ -38,7 +38,7 @@ body {
 }
 
 .input-container input:focus {
-    border-color: darkorange;
+    border-color: #2f3640;
     outline: none;
 }
 
@@ -48,26 +48,26 @@ body {
     padding: 10px;
     border-radius: 8px;
     margin: 5px;
-    background: orange;
+    background: #2f3640;
     border: none;
     color: white;
     cursor: pointer;
 }
 
 .input-container button:hover {
-    background: darkorange;
+    background: #272b34;
 }
 
 .input-container a {
     display: block;
     margin: 12px 0;
-    color: orange;
+    color: #2f3640;
     text-decoration: none;
     cursor: pointer;
 }
 
 .input-container a:hover {
-    color: darkorange;
+    color: #13151b;
     text-decoration: underline;
 }
 
@@ -76,15 +76,15 @@ body {
     display: block;
     margin: 12px auto;
     background: white;
-    color: orange;
-    border: 2px solid orange;
+    color: #2f3640;
+    border: 2px solid #2f3640;
     cursor: pointer;
     border-radius: 8px;
     padding: 10px;
 }
 
 .input-container .signup:hover {
-    background: orange;
+    background: #2f3640;
     color: white;
 }
 

@@ -2,6 +2,8 @@ from django.contrib.auth import login, logout
 from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
 from django.shortcuts import redirect, render
 
+from app.models import Project
+
 # Create your views here.
 
 
@@ -47,7 +49,21 @@ def logout_view(request):
 
 
 def dashboard_view(request):
-    return render(request, "app/dashboard.html")
+    user = request.user
+    project_count = user.projects.count()
+    task_count = user.tasks.count()
+    completed_tasks = user.tasks.filter(status="done").count()
+    inprogress_tasks = user.tasks.filter(status="inprogress").count()
+
+    recent_tasks = user.tasks.all().order_by("-created_at")[:5]
+    context = {
+        "project_count": project_count,
+        "task_count": task_count,
+        "completed_tasks": completed_tasks,
+        "inprogress_tasks": inprogress_tasks,
+        "recent_tasks": recent_tasks,
+    }
+    return render(request, "app/dashboard.html", context)
 
 
 def profile_view(request):
@@ -75,3 +91,31 @@ def edit_profile_view(request):
         return redirect("app:profile")
 
     return render(request, "app/profile.html")
+
+
+def projects_view(request):
+    if request.method == "POST":
+        title = request.POST.get("title")
+        description = request.POST.get("description")
+
+        if title:
+            project = Project(owner=request.user, title=title, description=description)
+            project.save()
+            return redirect("app:projects")
+        else:
+            error_message = "Title is required."
+    else:
+        error_message = None
+
+    user = request.user
+    projects = user.projects.all().order_by("-created_at")
+
+    context = {
+        "projects": projects,
+        "error_message": error_message,
+    }
+    return render(request, "app/projects.html", context)
+
+
+def project_view(request, project_id):
+    return render(request, "app/project.html", {"project_id": project_id})

@@ -1,13 +1,73 @@
-<!doctype html>
+{% load static %}
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport"
-          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Document</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard | Task Management</title>
+    <link rel="stylesheet" href="{% static 'app/style.css' %}">
+    <link rel="stylesheet" href="{% static 'app/dashboard.css' %}">
 </head>
 <body>
-    <h1>Dashboard</h1>
+    <header>
+        <h1>Dashboard</h1>
+        <nav>
+            <a href="/">Home</a>
+            <a href="{% url 'app:projects' %}">Projects</a>
+            <a href="">My Tasks</a>
+            <a href="{% url 'app:logout' %}">Logout</a>
+        </nav>
+    </header>
+
+    <main>
+        <section class="summary">
+            <div class="card">
+                <h2>Total Projects</h2>
+                <p>{{ project_count }}</p>
+            </div>
+            <div class="card">
+                <h2>Tasks Assigned</h2>
+                <p>{{ task_count }}</p>
+            </div>
+            <div class="card">
+                <h2>Completed Tasks</h2>
+                <p>{{ completed_tasks }}</p>
+            </div>
+            <div class="card">
+                <h2>In Progress Tasks</h2>
+                <p>{{ inprogress_tasks }}</p>
+            </div>
+        </section>
+
+        <section class="tasks">
+            <h2>Recent Tasks</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th><pre>Title         </pre></th>
+                        <th>Project</th>
+                        <th>Status</th>
+                        <th>Priority</th>
+                        <th>Deadline</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for task in recent_tasks %}
+                        <tr>
+                            <td>{{ task.title }}</td>
+                            <td>{{ task.project.title }}</td>
+                            <td>{{ task.status }}</td>
+                            <td>{{ task.get_priority_display }}</td>
+                            <td>{{ task.deadline }}</td>
+                        </tr>
+                    {% empty %}
+                        <tr>
+                            <td colspan="5">No tasks assigned yet.</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </section>
+    </main>
 </body>
 </html>
