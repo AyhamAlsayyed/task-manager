@@ -1,5 +1,6 @@
 from django.contrib.auth.models import User
-from django.test import TestCase
+from django.test import Client, TestCase
+from django.urls import reverse
 from django.utils import timezone
 
 from app.models import Comment, Project, ProjectMembership, Task, UserProfile
@@ -30,7 +31,7 @@ class ModelsTests(TestCase):
     def test_project_membership_creation(self):
         project = Project.objects.create(title="p1", owner=self.user)
         password = "password12345"  # nosec
-        member = User.objects.create_user(username="testuser2", password=password)  # different username
+        member = User.objects.create_user(username="testuser2", password=password)
         membership = ProjectMembership.objects.create(project=project, user=member, role="M")
         self.assertEqual(membership.project, project)
         self.assertEqual(membership.user, member)
@@ -70,3 +71,40 @@ class ModelsTests(TestCase):
         self.assertEqual(comment.task, task)
         self.assertEqual(comment.author, self.user)
         self.assertEqual(task.comments.count(), 1)
+
+
+class ProjectsViewTests(TestCase):
+    def setUp(self):
+        self.client = Client()
+        password = "password12345"  # nosec
+        self.user = User.objects.create_user(username="testuser", password=password)
+        self.client.login(username="testuser", password=password)
+
+    def test_projects_loads(self):
+        response = self.client.get(reverse("app:projects"))
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "My Projects")
+
+    def test_create_valid_project(self):
+        response = self.client.post(
+            reverse("app:projects"),
+            {
+                "title": "My Project",
+                "description": "My Description",
+            },
+            follow=True,
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue(Project.objects.filter(title="My Project").exists())
+
+    def test_create_invalid_project(self):
+        """Create a project with an invalid title."""
+        response = self.client.post(
+            reverse("app:projects"),
+            {
+                "title": "",
+                "description": "My Description",
+            },
+        )
+        self.assertEqual(Project.objects.count(), 0)
+        self.assertContains(response, "Title is required")
