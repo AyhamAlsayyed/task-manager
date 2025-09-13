@@ -42,7 +42,6 @@ class Task(models.Model):
         (1, "medium"),
         (2, "high"),
     ]
-    Tid = models.AutoField(primary_key=True)
     title = models.CharField(max_length=100)
     description = models.TextField()
     status = models.CharField(max_length=20, choices=status_choices, default="todo")

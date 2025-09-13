@@ -4,7 +4,6 @@ main {
     margin: auto;
 }
 
-/* Create Project Form */
 .create-project {
     background: white;
     padding: 20px;
@@ -36,7 +35,6 @@ main {
     background: #0e1313;
 }
 
-/* Project List */
 .project-list h2 {
     margin-bottom: 15px;
     color: #444;
@@ -79,6 +77,18 @@ a {
     display: block;
 }
 
+.popup-form.hide {
+    display: none;
+}
+
+#togglePopup.hide {
+    display: none;
+}
+
+#togglePopup.show {
+    display: block;
+}
+
 .popup-form input {
     display: block;
     padding: 10px;
@@ -98,10 +108,10 @@ a {
 }
 
 .popup-form button {
-    display: block;
+    display: inline-block;
     padding: 10px;
     border-radius: 8px;
-    margin: 5px;
+    margin: 5px 0 2px 5px;
     background: #2f3640;
     border: none;
     color: white;
