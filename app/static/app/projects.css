@@ -1,0 +1,125 @@
+main {
+    padding: 20px;
+    max-width: 1000px;
+    margin: auto;
+}
+
+/* Create Project Form */
+.create-project {
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    margin-bottom: 30px;
+}
+
+.create-project h2 {
+    margin-bottom: 15px;
+    color: #444;
+}
+
+.create-project form p {
+    margin-bottom: 10px;
+}
+
+.create-project button {
+    background: #2f3640;
+    color: white;
+    padding: 10px 18px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.create-project button:hover {
+    background: #0e1313;
+}
+
+/* Project List */
+.project-list h2 {
+    margin-bottom: 15px;
+    color: #444;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    background: white;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+thead {
+    background: #2f3640;
+    color: white;
+}
+
+th, td {
+    padding: 12px 15px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+}
+
+a {
+    text-decoration: none;
+    color: black;
+}
+
+.popup-form {
+    display: none;
+    margin: 1rem 0;
+    padding: 1rem;
+    border: 1px solid #ccc;
+    background-color: #f8f8f8;
+    border-radius: 8px;
+}
+.popup-form.show {
+    display: block;
+}
+
+.popup-form input {
+    display: block;
+    padding: 10px;
+    border: 2px solid lightgray;
+    border-radius: 8px;
+    margin: 5px;
+}
+
+.popup-form input:focus {
+    border-color: #2f3640;
+    outline: none;
+}
+
+.description {
+    width: 90%;
+    height: 100px;
+}
+
+.popup-form button {
+    display: block;
+    padding: 10px;
+    border-radius: 8px;
+    margin: 5px;
+    background: #2f3640;
+    border: none;
+    color: white;
+    cursor: pointer;
+}
+
+.popup-form button:hover {
+    background: #272b34;
+}
+
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  border: 0;
+}
