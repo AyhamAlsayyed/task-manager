@@ -32,15 +32,15 @@ class ProjectMembership(models.Model):
 
 class Task(models.Model):
     status_choices = [
-        ("todo", "TO do"),
-        ("inprogress", "IN progress"),
+        ("todo", "To Do"),
+        ("inprogress", "In Progress"),
         ("done", "DONE"),
     ]
 
     priority_choices = [
-        (0, "low"),
-        (1, "medium"),
-        (2, "high"),
+        (0, "Low"),
+        (1, "Medium"),
+        (2, "High"),
     ]
     title = models.CharField(max_length=100)
     description = models.TextField()

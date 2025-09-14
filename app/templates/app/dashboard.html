@@ -30,12 +30,12 @@
                 <p>{{ task_count }}</p>
             </div>
             <div class="card">
-                <h2>Completed Tasks</h2>
-                <p>{{ completed_tasks }}</p>
-            </div>
-            <div class="card">
                 <h2>In Progress Tasks</h2>
                 <p>{{ inprogress_tasks }}</p>
+            </div>
+            <div class="card">
+                <h2>Completed Tasks</h2>
+                <p>{{ completed_tasks }}</p>
             </div>
         </section>
 
@@ -58,7 +58,7 @@
                             <td>{{ task.project.title }}</td>
                             <td>{{ task.status }}</td>
                             <td>{{ task.get_priority_display }}</td>
-                            <td>{{ task.deadline }}</td>
+                            <td>{{ task.deadline|date:"Y-m-d" }}</td>
                         </tr>
                     {% empty %}
                         <tr>

@@ -50,6 +50,7 @@
                         <th>Description</th>
                         <th>Created</th>
                         <th>Tasks</th>
+                        <th>role</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -59,6 +60,7 @@
                             <td>{{ project.description }}</td>
                             <td>{{ project.created_at|date:"Y-m-d" }}</td>
                             <td>{{ project.tasks.count }}</td>
+                            <td>{{ project.user_role }}</td>
                         </tr>
                     {% empty %}
                     <tr>
