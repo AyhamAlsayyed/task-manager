@@ -34,7 +34,8 @@
                     {% if error_message %}
                         <p style="color:red;">{{ error_message }}</p>
                     {% endif %}
-                    <button type="submit">Create Project</button>
+                    <button type="submit">Create</button>
+                    <button type="button" id="cancelPopup">Cancel</button>
                 </form>
             </div>
 
@@ -49,6 +50,7 @@
                         <th>Description</th>
                         <th>Created</th>
                         <th>Tasks</th>
+                        <th>role</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -58,6 +60,7 @@
                             <td>{{ project.description }}</td>
                             <td>{{ project.created_at|date:"Y-m-d" }}</td>
                             <td>{{ project.tasks.count }}</td>
+                            <td>{{ project.user_role }}</td>
                         </tr>
                     {% empty %}
                     <tr>
@@ -69,9 +72,19 @@
         </section>
     </main>
     <script>
-        document.getElementById("togglePopup").addEventListener("click", function () {
-            document.getElementById("popupForm").classList.toggle("show");
+        const togglebtn = document.getElementById("togglePopup");
+        const popupForm = document.getElementById("popupForm");
+        const cancelBtn = document.getElementById("cancelPopup");
+
+        togglebtn.addEventListener("click", () => {
+            popupForm.classList.add("show")
+            togglebtn.classList.add("hide")
         });
+
+        cancelBtn.addEventListener("click", () => {
+            popupForm.classList.remove("show")
+            togglebtn.classList.remove("hide")
+        })
     </script>
 </body>
 
