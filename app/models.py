@@ -18,13 +18,14 @@ class Project(models.Model):
     description = models.TextField(blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     owner = models.ForeignKey(User, on_delete=models.CASCADE, related_name="projects")
+    members = models.ManyToManyField(User, through="ProjectMembership")
 
     def __str__(self):
         return self.title
 
 
 class ProjectMembership(models.Model):
-    role_choices = [("O", "owner"), ("M", "member")]
+    role_choices = [("O", "owner"), ("A", "member"), ("M", "member")]
     role = models.CharField(max_length=1, choices=role_choices, default="M")
     project = models.ForeignKey(Project, on_delete=models.CASCADE, related_name="memberships")
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="memberships")

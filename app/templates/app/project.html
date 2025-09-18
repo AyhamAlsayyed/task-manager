@@ -62,7 +62,7 @@
         </table>
     </section>
 
-{% if project.user_role == "O" %}
+{% if project.user_role == "A" or project.user_role == "O" %}
     <section class="create-task" id="create-task">
         <h2>Create Task</h2>
         <div class="popup-form">
@@ -143,7 +143,7 @@
         </table>
     </section>
 
-    {% if project.user_role == "O" %}
+    {% if project.user_role == "A" or project.user_role == "O" %}
     <section class="invite-member" id="invite-member">
         <h2>Invite Member</h2>
         <div id="popupForm" class="popup-form">
@@ -169,7 +169,7 @@
                 <label for="role">Role:</label>
                 <select name="role" id="role">
                     <option value="M" selected>Member</option>
-                    <option value="O">Owner</option>
+                    <option value="A">Admin</option>
                 </select>
 
                 <button type="submit">Invite</button>
