@@ -18,7 +18,9 @@
         <a href="{% url 'app:dashboard' %}">Dashboard</a>
         <a href="{% url 'app:projects' %}">Projects</a>
         <a href="">My Tasks</a>
-        <a href="{% url 'app:logout' %}">Logout</a>
+        <a href="{% url 'app:profile' %}">
+            <img class="user-avatar" src="{{ user.userprofile.avatar.url }}" alt="Profile">
+        </a>
     </nav>
 </header>
 
@@ -31,7 +33,7 @@
     </section>
 
     <section class="task-list">
-        <h2>Project Tasks</h2>
+        <h2>Tasks</h2>
         <table>
             <thead>
                 <tr>
@@ -53,12 +55,63 @@
                     </tr>
                 {% empty %}
                     <tr>
-                        <td colspan="4">No tasks found.</td>
+                        <td colspan="5">No tasks found.</td>
                     </tr>
                 {% endfor %}
             </tbody>
         </table>
     </section>
+
+{% if project.user_role == "A" or project.user_role == "O" %}
+    <section class="create-task" id="create-task">
+        <h2>Create Task</h2>
+        <div class="popup-form">
+            {% if messages %}
+                {% for message in messages %}
+                    {% if "create-task" in message.tags %}
+                        <p style="color: {% if message.level_tag == 'error' %}red{% else %}green{% endif %};">
+                           {{ message }}
+                       </p>
+                    {% endif %}
+                {% endfor %}
+            {% endif %}
+            <form method="post" action="{% url 'app:create_task' project.id %}">
+                {% csrf_token %}
+                <label for="title">Task Title:</label>
+                <input type="text" name="title" id="title" required>
+
+                <label for="description">Description:</label>
+                <input type="text" name="description" id="description">
+
+                <label for="status">Status:</label>
+                <select name="status" id="status">
+                    <option value="todo" selected>To Do</option>
+                    <option value="inprogress">In Progress</option>
+                    <option value="done">Done</option>
+                </select>
+
+                <label for="priority">Priority:</label>
+                <select name="priority" id="priority">
+                    <option value="0" selected>Low</option>
+                    <option value="1">Medium</option>
+                    <option value="2">High</option>
+                </select>
+
+                <label for="deadline">Deadline:</label>
+                <input type="date" name="deadline" id="deadline" required>
+
+                <label for="user_id">Select User:</label>
+                <select name="user_id" id="user_id" required>
+                    <option value="" disabled selected>Select a user</option>
+                    {% for user in users %}
+                        <option value="{{ user.id }}">{{ user.username }}</option>
+                    {% endfor %}
+                </select>
+                <button type="submit">Add Task</button>
+            </form>
+        </div>
+    </section>
+    {% endif %}
 
     <section class="members-list">
         <h2>Members</h2>
@@ -90,16 +143,25 @@
         </table>
     </section>
 
-    {% if project.user_role == "O" %}
-    <section class="invite-member">
+    {% if project.user_role == "A" or project.user_role == "O" %}
+    <section class="invite-member" id="invite-member">
         <h2>Invite Member</h2>
         <div id="popupForm" class="popup-form">
-            <form method="post" action="{% url 'app:project' project.id %}">
+            {% if messages %}
+                {% for message in messages %}
+                    {% if "invite-member" in message.tags %}
+                       <p style="color: {% if message.level_tag == 'error' %}red{% else %}green{% endif %};">
+                           {{ message }}
+                       </p>
+                    {% endif %}
+                {% endfor %}
+            {% endif %}
+            <form method="post" action="{% url 'app:add_member' project.id %}">
                 {% csrf_token %}
                 <label for="user_id">Select User:</label>
                 <select name="user_id" id="user_id" required>
                     <option value="" disabled selected>Select a user</option>
-                    {% for user in users %}
+                    {% for user in users_in %}
                         <option value="{{ user.id }}">{{ user.username }}</option>
                     {% endfor %}
                 </select>
@@ -107,12 +169,8 @@
                 <label for="role">Role:</label>
                 <select name="role" id="role">
                     <option value="M" selected>Member</option>
-                    <option value="O">Owner</option>
+                    <option value="A">Admin</option>
                 </select>
-
-                {% if error_message %}
-                    <p style="color:red;">{{ error_message }}</p>
-                {% endif %}
 
                 <button type="submit">Invite</button>
                 <button type="button" id="cancelPopup">Cancel</button>

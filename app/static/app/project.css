@@ -55,6 +55,63 @@ a {
     color: black;
 }
 
+.create-task {
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    margin-bottom: 30px;
+}
+
+.create-task h2 {
+    margin-bottom: 15px;
+    color: #444;
+}
+
+.create-task .popup-form {
+    display: block;
+    margin: 1rem 0;
+    padding: 1rem;
+    border: 1px solid #ccc;
+    background-color: #f8f8f8;
+    border-radius: 8px;
+}
+
+.create-task .popup-form input,
+.create-task .popup-form select {
+    display: block;
+    width: 90%;
+    padding: 10px;
+    border: 2px solid lightgray;
+    border-radius: 8px;
+    margin: 5px 0;
+}
+
+.create-task .popup-form select{
+    width: 92.5%;
+}
+
+.create-task .popup-form input:focus,
+.create-task .popup-form select:focus {
+    border-color: #2f3640;
+    outline: none;
+}
+
+.create-task .popup-form button {
+    display: inline-block;
+    padding: 10px;
+    border-radius: 8px;
+    margin: 5px 5px 0 0;
+    background: #2f3640;
+    border: none;
+    color: white;
+    cursor: pointer;
+}
+
+.create-task .popup-form button:hover {
+    background: #272b34;
+}
+
 .members-list {
     background: white;
     padding: 20px;
@@ -112,7 +169,7 @@ a {
 
 .popup-form input, .popup-form select {
     display: block;
-    width: 90%;
+    width: 92.5%;
     padding: 10px;
     border: 2px solid lightgray;
     border-radius: 8px;

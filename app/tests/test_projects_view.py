@@ -37,6 +37,7 @@ class ProjectsViewTests(TestCase):
                 "title": "",
                 "description": "My Description",
             },
+            follow=True,
         )
         self.assertEqual(Project.objects.count(), 0)
         self.assertContains(response, "Title is required")

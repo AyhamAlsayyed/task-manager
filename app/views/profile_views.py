@@ -17,7 +17,6 @@ def edit_profile_view(request):
 
         profile.bio = request.POST.get("bio")
 
-        avatar = request.FILES.get("avatar")
         if avatar:
             profile.avatar = avatar
         profile.save()
