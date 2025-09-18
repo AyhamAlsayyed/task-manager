@@ -18,7 +18,9 @@
         <a href="{% url 'app:dashboard' %}">Dashboard</a>
         <a href="{% url 'app:projects' %}">Projects</a>
         <a href="">My Tasks</a>
-        <a href="{% url 'app:logout' %}">Logout</a>
+        <a href="{% url 'app:profile' %}">
+            <img class="user-avatar" src="{{ user.userprofile.avatar.url }}" alt="Profile">
+        </a>
     </nav>
 </header>
 
@@ -76,7 +78,7 @@
             <form method="post" action="{% url 'app:create_task' project.id %}">
                 {% csrf_token %}
                 <label for="title">Task Title:</label>
-                <input type="text" name="title" id="title" >
+                <input type="text" name="title" id="title" required>
 
                 <label for="description">Description:</label>
                 <input type="text" name="description" id="description">

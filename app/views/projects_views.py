@@ -19,7 +19,7 @@ def projects_view(request):
             messages.error(request, "Title is required.", extra_tags="invite-member")
             return redirect("app:projects")
 
-        project = Project(owner=request.user, title=title, description=description)
+        project = Project(owner=owner, title=title, description=description)
         project.save()
         membership = ProjectMembership(user=owner, role="O", project=project)
         membership.save()
@@ -96,13 +96,16 @@ def create_task_view(request, project_id):
             messages.error(request, "Title is required.", extra_tags="create-task")
             return redirect(reverse("app:project", args=[project_id]) + "#create-task")
 
-        if deadline:
-            deadline_dt = datetime.strptime(deadline, "%Y-%m-%d")
-            deadline_dt = timezone.make_aware(deadline_dt)
+        if not deadline:
+            messages.error(request, "Deadline is required.", extra_tags="create-task")
+            return redirect(reverse("app:project", args=[project_id]) + "#create-task")
 
-            if deadline_dt < timezone.now():
-                messages.error(request, "Deadline can't be in the past.", extra_tags="create-task")
-                return redirect(reverse("app:project", args=[project_id]) + "#create-task")
+        deadline_dt = datetime.strptime(deadline, "%Y-%m-%d")
+        deadline_dt = timezone.make_aware(deadline_dt)
+
+        if deadline_dt < timezone.now():
+            messages.error(request, "Deadline can't be in the past.", extra_tags="create-task")
+            return redirect(reverse("app:project", args=[project_id]) + "#create-task")
 
         assigned_user = get_object_or_404(User, pk=user_id)
         Task.objects.create(
