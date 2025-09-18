@@ -30,6 +30,9 @@ class ProjectMembership(models.Model):
     project = models.ForeignKey(Project, on_delete=models.CASCADE, related_name="memberships")
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="memberships")
 
+    class Meta:
+        constraints = [models.UniqueConstraint(fields=["project", "user"], name="unique_project_user")]
+
 
 class Task(models.Model):
     status_choices = [
