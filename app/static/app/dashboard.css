@@ -26,10 +26,12 @@
     color: #2f3640;
 }
 
+.projects,
 .tasks {
     padding: 20px;
 }
 
+.projects h2,
 .tasks h2 {
     margin-bottom: 15px;
     color: #2f3640;

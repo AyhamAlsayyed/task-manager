@@ -10,7 +10,7 @@ from app.models import Project, ProjectMembership, Task
 
 
 def projects_view(request):
-    owner = request.user
+    user = request.user
     if request.method == "POST":
         title = request.POST.get("title")
         description = request.POST.get("description")
@@ -19,16 +19,16 @@ def projects_view(request):
             messages.error(request, "Title is required.", extra_tags="invite-member")
             return redirect("app:projects")
 
-        project = Project(owner=owner, title=title, description=description)
+        project = Project(owner=user, title=title, description=description)
         project.save()
-        membership = ProjectMembership(user=owner, role="O", project=project)
+        membership = ProjectMembership(user=user, role="O", project=project)
         membership.save()
         messages.success(request, "Project created successfully.", extra_tags="invite-member")
         return redirect("app:projects")
 
-    projects = Project.objects.filter(memberships__user=owner).order_by("-created_at")
+    projects = Project.objects.filter(memberships__user=user).order_by("-created_at")
     for project in projects:
-        membership = ProjectMembership.objects.get(project=project, user=owner)
+        membership = ProjectMembership.objects.get(project=project, user=user)
         project.user_role = membership.get_role_display()
 
     context = {
@@ -41,6 +41,7 @@ def project_view(request, project_id):
     project = get_object_or_404(Project, pk=project_id)
     users_in = User.objects.exclude(memberships__project=project).order_by("username")
     users = User.objects.filter(memberships__project=project)
+
     membership = ProjectMembership.objects.get(project=project, user=request.user)
     project.user_role = membership.role
     tasks = project.tasks.all()

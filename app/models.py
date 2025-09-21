@@ -25,7 +25,7 @@ class Project(models.Model):
 
 
 class ProjectMembership(models.Model):
-    role_choices = [("O", "owner"), ("A", "member"), ("M", "member")]
+    role_choices = [("O", "owner"), ("A", "admin"), ("M", "member")]
     role = models.CharField(max_length=1, choices=role_choices, default="M")
     project = models.ForeignKey(Project, on_delete=models.CASCADE, related_name="memberships")
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="memberships")

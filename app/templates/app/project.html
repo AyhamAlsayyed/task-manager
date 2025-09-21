@@ -127,11 +127,7 @@
                 <tr>
                     <td>{{ membership.user.username }}</td>
                     <td>
-                        {% if membership.role == "O" %}
-                            Owner
-                        {% else %}
-                            Member
-                        {% endif %}
+                        {{ membership.get_role_display }}
                     </td>
                 </tr>
                 {% empty %}
@@ -142,7 +138,6 @@
             </tbody>
         </table>
     </section>
-
     {% if project.user_role == "A" or project.user_role == "O" %}
     <section class="invite-member" id="invite-member">
         <h2>Invite Member</h2>

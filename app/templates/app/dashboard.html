@@ -41,6 +41,36 @@
             </div>
         </section>
 
+        <section class="projects">
+            <h2>Recent Projects</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th><pre>Title         </pre></th>
+                        <th>Description</th>
+                        <th>Owner</th>
+                        <th>Role</th>
+                        <th>Progress</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for project in recent_projects %}
+                        <tr>
+                            <td><a href="{% url 'app:project' project.id %}">{{ project.title }}</a></td>
+                            <td>{{ project.description }}</td>
+                            <td>{{ project.owner.username }}</td>
+                            <td>{{ project.user_role }}</td>
+                            <td>{{ progress }}</td>
+                        </tr>
+                    {% empty %}
+                        <tr>
+                            <td colspan="5">You are not a member of any project.</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </section>
+
         <section class="tasks">
             <h2>Recent Tasks</h2>
             <table>
