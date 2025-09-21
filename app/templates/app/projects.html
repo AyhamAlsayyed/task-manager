@@ -17,7 +17,9 @@
             <a href="/">Home</a>
             <a href="{% url 'app:dashboard' %}">Dashboard</a>
             <a href="">My Tasks</a>
-            <a href="{% url 'app:logout' %}">Logout</a>
+            <a href="{% url 'app:profile' %}">
+                <img class="user-avatar" src="{{ user.userprofile.avatar.url }}" alt="Profile">
+            </a>
         </nav>
     </header>
 
@@ -31,8 +33,12 @@
                     <input type="text" name="title" placeholder="Title" id="title" required>
                     <label for="description" class="sr-only"></label>
                     <input type="text" name="description" placeholder="Description" id="description" class="description">
-                    {% if error_message %}
-                        <p style="color:red;">{{ error_message }}</p>
+                    {% if messages %}
+                      {% for message in messages %}
+                        <p style="color: {% if message.tags == 'error' %}red{% else %}green{% endif %};">
+                          {{ message }}
+                        </p>
+                      {% endfor %}
                     {% endif %}
                     <button type="submit">Create</button>
                     <button type="button" id="cancelPopup">Cancel</button>
