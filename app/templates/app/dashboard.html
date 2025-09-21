@@ -14,7 +14,7 @@
         <nav>
             <a href="/">Home</a>
             <a href="{% url 'app:projects' %}">Projects</a>
-            <a href="">My Tasks</a>
+            <a href="{% url 'app:tasks' %}">My Tasks</a>
             <a href="{% url 'app:profile' %}">
                 <img class="user-avatar" src="{{ user.userprofile.avatar.url }}" alt="Profile">
             </a>
