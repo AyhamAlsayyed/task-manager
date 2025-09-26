@@ -16,7 +16,7 @@
         <nav>
             <a href="/">Home</a>
             <a href="{% url 'app:dashboard' %}">Dashboard</a>
-            <a href="">My Tasks</a>
+            <a href="{% url 'app:tasks' %}">My Tasks</a>
             <a href="{% url 'app:profile' %}">
                 <img class="user-avatar" src="{{ user.userprofile.avatar.url }}" alt="Profile">
             </a>
@@ -56,7 +56,7 @@
                         <th>Description</th>
                         <th>Created</th>
                         <th>Tasks</th>
-                        <th>role</th>
+                        <th>Role</th>
                     </tr>
                 </thead>
                 <tbody>

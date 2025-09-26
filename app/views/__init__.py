@@ -9,3 +9,4 @@ from .projects_views import (
     project_view,
     projects_view,
 )
+from .tasks_views import tasks_view

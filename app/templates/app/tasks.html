@@ -1,0 +1,82 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Tasks | Task Manager</title>
+    <link rel="stylesheet" href="{% static 'app/style.css' %}">
+    <link rel="stylesheet" href="{% static 'app/tasks.css' %}">
+</head>
+
+<body>
+<header>
+    <h1>My Tasks</h1>
+    <nav>
+        <a href="/">Home</a>
+        <a href="{% url 'app:dashboard' %}">Dashboard</a>
+        <a href="{% url 'app:projects' %}">Projects</a>
+        <a href="{% url 'app:profile' %}">
+            <img class="user-avatar" src="{{ user.userprofile.avatar.url }}" alt="Profile">
+        </a>
+    </nav>
+</header>
+
+<main>
+    <section class="task-controls">
+            <form method="get" action="{% url 'app:tasks' %}" class="task-search">
+                <input type="text" name="q" placeholder="Search by title or description" value="{{ request.GET.q }}">
+                <button type="submit">Search</button>
+            </form>
+            <form method="get" action="{% url 'app:tasks' %}" class="task-filters">
+            <select name="status">
+                <option value="">All Statuses</option>
+                <option value="todo" {% if request.GET.status == "todo" %}selected{% endif %}>To Do</option>
+                <option value="inprogress" {% if request.GET.status == "inprogress" %}selected{% endif %}>In Progress</option>
+                <option value="done" {% if request.GET.status == "Done" %}selected{% endif %}>Done</option>
+            </select>
+
+            <select name="priority">
+                <option value="">All Priorities</option>
+                <option value="L" {% if request.GET.priority == "L" %}selected{% endif %}>Low</option>
+                <option value="M" {% if request.GET.priority == "M" %}selected{% endif %}>Medium</option>
+                <option value="H" {% if request.GET.priority == "H" %}selected{% endif %}>High</option>
+            </select>
+
+            <input type="date" name="deadline" value="{{ request.GET.deadline }}">
+            <button type="submit">Filter</button>
+        </form>
+    </section>
+
+    <section class="task-list">
+        <h2>All Tasks</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Title</th>
+                    <th>Description</th>
+                    <th>Status</th>
+                    <th>Priority</th>
+                    <th>Deadline</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for task in tasks %}
+                <tr>
+                    <td>{{ task.title }}</td>
+                    <td>{{ task.description }}</td>
+                    <td>{{ task.get_status_display }}</td>
+                    <td>{{ task.get_priority_display }}</td>
+                    <td>{{ task.deadline|date:"Y-m-d" }}</td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="5">No tasks found.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </section>
+</main>
+</body>
+</html>

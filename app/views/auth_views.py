@@ -39,4 +39,4 @@ def signup_view(request):
 
 def logout_view(request):
     logout(request)
-    return redirect("app:home")
+    return redirect("app:login")

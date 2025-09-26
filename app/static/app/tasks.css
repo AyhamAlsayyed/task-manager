@@ -1,0 +1,60 @@
+.task-controls, .task-list, .add-task {
+    background: #fff;
+    padding: 1rem;
+    margin: 1rem auto;
+    max-width: 900px;
+    border-radius: 10px;
+    box-shadow: 0 0 5px rgba(0,0,0,0.1);
+}
+
+.task-filters,
+.task-search {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    justify-content: flex-start;
+    align-items: center;
+    margin-bottom: 5px
+}
+
+.task-search input[type="text"],
+.task-filters select,
+.task-filters input[type="date"] {
+    padding: 0.5rem;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+.task-search input[type="text"] {
+    width: 344px;
+}
+
+.task-search button,
+.task-filters button {
+    padding: 0.5rem 1rem;
+    background-color: #2f3640;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+
+.task-filters button:hover {
+    background-color: #0056b3;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 1rem;
+}
+
+thead {
+    background-color: #f0f0f0;
+}
+th, td {
+    padding: 0.75rem;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+}
