@@ -1,0 +1,31 @@
+<header>
+    <h1>Task Manager</h1>
+    <nav>
+        {% if user.is_authenticated %}
+        <nav>
+          <a href="{% url 'app:home' %}"
+             class="{% if request.resolver_match.url_name == 'home' %}active{% endif %}">
+             Home
+          </a>
+          <a href="{% url 'app:dashboard' %}"
+             class="{% if request.resolver_match.url_name == 'dashboard' %}active{% endif %}">
+             Dashboard
+          </a>
+          <a href="{% url 'app:projects' %}"
+             class="{% if request.resolver_match.url_name == 'projects' %}active{% endif %}">
+             Projects
+          </a>
+          <a href="{% url 'app:tasks' %}"
+             class="{% if request.resolver_match.url_name == 'tasks' %}active{% endif%}">
+             My Tasks
+          </a>
+          <a href="{% url 'app:profile' %}">
+             <img class="user-avatar" src="{{ user.userprofile.avatar.url }}" alt="Profile">
+          </a>
+        </nav>
+        {% else %}
+            <a href="{% url 'app:login' %}">Login</a>
+            <a href="{% url 'app:signup' %}">Sign Up</a>
+        {% endif %}
+    </nav>
+</header>

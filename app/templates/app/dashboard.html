@@ -1,27 +1,12 @@
+{% extends "app/base.html" %}
 {% load static %}
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard | Task Management</title>
-    <link rel="stylesheet" href="{% static 'app/style.css' %}">
-    <link rel="stylesheet" href="{% static 'app/dashboard.css' %}">
-</head>
-<body>
-    <header>
-        <h1>Dashboard</h1>
-        <nav>
-            <a href="/">Home</a>
-            <a href="{% url 'app:projects' %}">Projects</a>
-            <a href="{% url 'app:tasks' %}">My Tasks</a>
-            <a href="{% url 'app:profile' %}">
-                <img class="user-avatar" src="{{ user.userprofile.avatar.url }}" alt="Profile">
-            </a>
-        </nav>
-    </header>
 
-    <main>
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'app/dashboard.css' %}">
+{% endblock %}
+
+{% block content %}
+<main>
         <section class="summary">
             <div class="card">
                 <h2>Total Projects</h2>
@@ -29,7 +14,7 @@
             </div>
             <div class="card">
                 <h2>Tasks Assigned</h2>
-                <p>{{ task_count }}</p>
+                <p>{{ todo_tasks }}</p>
             </div>
             <div class="card">
                 <h2>In Progress Tasks</h2>
@@ -58,8 +43,8 @@
                         <tr>
                             <td><a href="{% url 'app:project' project.id %}">{{ project.title }}</a></td>
                             <td>{{ project.description }}</td>
-                            <td>{{ project.owner.username }}</td>
-                            <td>{{ project.user_role }}</td>
+                            <td>{{ project.owner }}</td>
+                            <td>{{ h }}</td>
                             <td>{{ progress }}</td>
                         </tr>
                     {% empty %}
@@ -101,5 +86,4 @@
             </table>
         </section>
     </main>
-</body>
-</html>
+{% endblock %}
