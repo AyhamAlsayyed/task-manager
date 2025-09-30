@@ -19,7 +19,8 @@
               </div>
             {% endif %}
             <label for="username" class="sr-only"></label>
-            <input type="text" name="username" placeholder="Username" id="username" required>
+            <input type="text" name="username" placeholder="Username" id="username"
+                   value="{{ request.POST.username|default:'' }}" required>
 
             <label for="password1" class="sr-only"></label>
             <input type="password" placeholder="Password" id="password1" name="password1" required>
@@ -28,7 +29,7 @@
             <input type="password" placeholder="Confirm Password" id="password2" name="password2" required>
 
             <label for="bio" class="sr-only"></label>
-            <input type="text" placeholder="bio" id="bio" name="bio">
+            <input type="text" placeholder="bio" id="bio" name="bio" value="{{ request.POST.bio |default:'' }}">
             <a href="{% url 'app:login' %}" style="color:darkorange;">Already have an account?</a>
             <p>_____________________________</p>
             <button type="submit" class="signup">Sign up</button>

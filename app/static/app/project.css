@@ -1,6 +1,5 @@
 main {
-    padding: 20px;
-    max-width: 1000px;
+    width: 70%;
     margin: auto;
 }
 
@@ -194,4 +193,8 @@ a {
 
 .popup-form button:hover {
     background: #272b34;
+}
+
+.error_message {
+    color: red;
 }

@@ -66,22 +66,18 @@
     <section class="create-task" id="create-task">
         <h2>Create Task</h2>
         <div class="popup-form">
-            {% if messages %}
-                {% for message in messages %}
-                    {% if "create-task" in message.tags %}
-                        <p style="color: {% if message.level_tag == 'error' %}red{% else %}green{% endif %};">
-                           {{ message }}
-                       </p>
-                    {% endif %}
-                {% endfor %}
+            {% if error_message and anchor == "create-task" %}
+                <p class="error_message">{{ error_message }}</p>
             {% endif %}
             <form method="post" action="{% url 'app:create_task' project.id %}">
                 {% csrf_token %}
                 <label for="title">Task Title:</label>
-                <input type="text" name="title" id="title" required>
+                <input type="text" name="title" id="title"
+                        value="{{ request.POST.title|default:'' }}" required>
 
                 <label for="description">Description:</label>
-                <input type="text" name="description" id="description">
+                <input type="text" name="description" id="description"
+                 value="{{ request.POST.description|default:'' }}">
 
                 <label for="status">Status:</label>
                 <select name="status" id="status">
@@ -98,7 +94,8 @@
                 </select>
 
                 <label for="deadline">Deadline:</label>
-                <input type="date" name="deadline" id="deadline" required>
+                <input type="date" name="deadline" id="deadline"
+                       value="{{ request.POST.deadline|default:'' }}" required>
 
                 <label for="user_id">Select User:</label>
                 <select name="user_id" id="user_id" required>
@@ -126,9 +123,7 @@
                 {% for membership in project.memberships.all %}
                 <tr>
                     <td>{{ membership.user.username }}</td>
-                    <td>
-                        {{ membership.get_role_display }}
-                    </td>
+                    <td>{{ membership.get_role_display }}</td>
                 </tr>
                 {% empty %}
                 <tr>
@@ -139,22 +134,16 @@
         </table>
     </section>
     {% if project.user_role == "A" or project.user_role == "O" %}
-    <section class="invite-member" id="invite-member">
+    <section class="add-member" id="add-member">
         <h2>Invite Member</h2>
         <div id="popupForm" class="popup-form">
-            {% if messages %}
-                {% for message in messages %}
-                    {% if "invite-member" in message.tags %}
-                       <p style="color: {% if message.level_tag == 'error' %}red{% else %}green{% endif %};">
-                           {{ message }}
-                       </p>
-                    {% endif %}
-                {% endfor %}
+            {% if error_message and anchor == "add-member"%}
+                <p class="error_message">{{ error_message }}</p>
             {% endif %}
             <form method="post" action="{% url 'app:add_member' project.id %}">
                 {% csrf_token %}
                 <label for="user_id">Select User:</label>
-                <select name="user_id" id="user_id" required>
+                <select name="user_id" id="user_id">
                     <option value="" disabled selected>Select a user</option>
                     {% for user in users_in %}
                         <option value="{{ user.id }}">{{ user.username }}</option>
@@ -174,6 +163,12 @@
     </section>
     {% endif %}
 </main>
+    {% if anchor %}
+    <script>
+      window.location.hash = "{{ anchor }}";
+    </script>
+    {% endif %}
+
 </body>
 
 </html>
