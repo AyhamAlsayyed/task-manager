@@ -23,10 +23,6 @@ class Project(models.Model):
     def __str__(self):
         return self.title
 
-    def get_user_role_display(self, user):
-        membership = self.projectmembership_set.filter(user=user).first()
-        return membership.get_role_display() if membership else None
-
 
 class ProjectMembership(models.Model):
     role_choices = [("O", "owner"), ("A", "admin"), ("M", "member")]

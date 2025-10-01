@@ -1,6 +1,7 @@
 from datetime import datetime
 
 from django.contrib.auth.models import User
+from django.db import transaction
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
 from django.utils import timezone
@@ -18,11 +19,12 @@ def projects_view(request):
             error_message = "Title is required"
             return render(request, "app/projects.html", {"error_message": error_message})
 
-        project = Project(owner=user, title=title, description=description)
-        project.save()
-        membership = ProjectMembership(user=user, role="O", project=project)
-        membership.save()
-        return redirect(reverse("projects_view"))
+        with transaction.atomic():
+            project = Project(owner=user, title=title, description=description)
+            project.save()
+            membership = ProjectMembership(user=user, role="O", project=project)
+            membership.save()
+        return redirect(reverse("app:projects"))
 
     projects = Project.objects.filter(memberships__user=user).order_by("-created_at")
     for project in projects:
