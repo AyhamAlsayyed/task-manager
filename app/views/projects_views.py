@@ -26,10 +26,7 @@ def projects_view(request):
             membership.save()
         return redirect(reverse("app:projects"))
 
-    projects = Project.objects.filter(memberships__user=user).order_by("-created_at")
-    for project in projects:
-        membership = ProjectMembership.objects.get(project=project, user=user)
-        project.user_role = membership.get_role_display()
+    projects = ProjectMembership.objects.filter(user=user).select_related("project").order_by("-project__created_at")
 
     context = {
         "projects": projects,
