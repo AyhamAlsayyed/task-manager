@@ -11,27 +11,29 @@ from app.models import Project, ProjectMembership, Task
 
 def projects_view(request):
     user = request.user
-    if request.method == "POST":
-        title = request.POST.get("title")
-        description = request.POST.get("description")
+    if request.method != "POST":
+        projects = (
+            ProjectMembership.objects.filter(user=user).select_related("project").order_by("-project__created_at")
+        )
 
-        if not title:
-            error_message = "Title is required"
-            return render(request, "app/projects.html", {"error_message": error_message})
+        context = {
+            "projects": projects,
+        }
+        return render(request, "app/projects.html", context)
 
-        with transaction.atomic():
-            project = Project(owner=user, title=title, description=description)
-            project.save()
-            membership = ProjectMembership(user=user, role="O", project=project)
-            membership.save()
-        return redirect(reverse("app:projects"))
+    title = request.POST.get("title")
+    description = request.POST.get("description")
 
-    projects = ProjectMembership.objects.filter(user=user).select_related("project").order_by("-project__created_at")
+    if not title:
+        error_message = "Title is required"
+        return render(request, "app/projects.html", {"error_message": error_message})
 
-    context = {
-        "projects": projects,
-    }
-    return render(request, "app/projects.html", context)
+    with transaction.atomic():
+        project = Project(owner=user, title=title, description=description)
+        project.save()
+        membership = ProjectMembership(user=user, role="O", project=project)
+        membership.save()
+    return redirect(reverse("app:projects"))
 
 
 def project_view(request, project_id):

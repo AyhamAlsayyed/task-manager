@@ -47,7 +47,7 @@
                 <tbody>
                     {% for project in projects %}
                         <tr>
-                            <td><a href="{% url 'app:project' project.id %}">
+                            <td><a href="{% url 'app:project' project.project.id %}">
                                 {{ project.project.title }}</a></td>
                             <td>{{ project.project.description }}</td>
                             <td>{{ project.project.created_at|date:"Y-m-d" }}</td>
