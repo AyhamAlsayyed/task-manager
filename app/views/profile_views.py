@@ -9,18 +9,18 @@ def edit_profile_view(request):
     user = request.user
     profile = user.userprofile
 
-    if request.method == "POST":
-        avatar = request.FILES.get("avatar")
-        user.username = request.POST.get("username")
-        user.email = request.POST.get("email")
-        user.save()
+    if request.method != "POST":
+        return render(request, "app/profile.html")
 
-        profile.bio = request.POST.get("bio")
+    avatar = request.FILES.get("avatar")
+    user.username = request.POST.get("username")
+    user.email = request.POST.get("email")
+    user.save()
 
-        if avatar:
-            profile.avatar = avatar
-        profile.save()
+    profile.bio = request.POST.get("bio")
 
-        return redirect("app:home")
+    if avatar:
+        profile.avatar = avatar
+    profile.save()
 
-    return render(request, "app/profile.html")
+    return redirect("app:home")

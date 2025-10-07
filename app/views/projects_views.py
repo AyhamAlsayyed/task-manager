@@ -1,7 +1,7 @@
 from datetime import datetime
 
-from django.contrib import messages
 from django.contrib.auth.models import User
+from django.db import transaction
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
 from django.utils import timezone
@@ -11,51 +11,39 @@ from app.models import Project, ProjectMembership, Task
 
 def projects_view(request):
     user = request.user
-    if request.method == "POST":
-        title = request.POST.get("title")
-        description = request.POST.get("description")
+    if request.method != "POST":
+        projects = (
+            ProjectMembership.objects.filter(user=user).select_related("project").order_by("-project__created_at")
+        )
 
-        if not title:
-            messages.error(request, "Title is required.", extra_tags="invite-member")
-            return redirect("app:projects")
+        context = {
+            "projects": projects,
+        }
+        return render(request, "app/projects.html", context)
 
+    title = request.POST.get("title")
+    description = request.POST.get("description")
+
+    if not title:
+        error_message = "Title is required"
+        return render(request, "app/projects.html", {"error_message": error_message})
+
+    with transaction.atomic():
         project = Project(owner=user, title=title, description=description)
         project.save()
         membership = ProjectMembership(user=user, role="O", project=project)
         membership.save()
-        messages.success(request, "Project created successfully.", extra_tags="invite-member")
-        return redirect("app:projects")
-
-    projects = Project.objects.filter(memberships__user=user).order_by("-created_at")
-    for project in projects:
-        membership = ProjectMembership.objects.get(project=project, user=user)
-        project.user_role = membership.get_role_display()
-
-    context = {
-        "projects": projects,
-    }
-    return render(request, "app/projects.html", context)
+    return redirect(reverse("app:projects"))
 
 
 def project_view(request, project_id):
     project = get_object_or_404(Project, pk=project_id)
-    users_in = User.objects.exclude(memberships__project=project).order_by("username")
-    users = User.objects.filter(memberships__project=project)
-
-    membership = ProjectMembership.objects.get(project=project, user=request.user)
-    project.user_role = membership.role
-    tasks = project.tasks.all()
-    context = {
-        "tasks": tasks,
-        "project": project,
-        "users_in": users_in,
-        "users": users,
-    }
-    return render(request, "app/project.html", context)
+    return render(request, "app/project.html", project_context(project, request.user))
 
 
 def add_member_view(request, project_id):
     project = get_object_or_404(Project, pk=project_id)
+    anchor = "add-member"
     if request.method != "POST":
         return redirect(reverse("app:project", args=[project_id]) + "#invite-member")
 
@@ -63,61 +51,96 @@ def add_member_view(request, project_id):
     role = request.POST.get("role")
 
     if not user_id:
-        messages.error(request, "Please select a user.")
-        return redirect(reverse("app:project", args=[project_id]) + "#invite-member")
+        error_message = "User_id is required"
+        return render(request, "app/project.html", project_context(project, request.user, error_message, anchor))
 
     invited_user = get_object_or_404(User, pk=user_id)
     if ProjectMembership.objects.filter(user=invited_user, project=project).exists():
-        messages.error(request, f"{invited_user.username} is already a member of this project.")
-        return redirect(reverse("app:project", args=[project_id]) + "#invite-member")
+        error_message = f"{invited_user.username} is already a member of this project."
+        return render(request, "app/project.html", project_context(project, request.user, error_message, anchor))
 
     ProjectMembership.objects.create(user=invited_user, role=role, project=project)
-    messages.success(request, f"{invited_user.username} has been added to the project.")
     return redirect(reverse("app:project", args=[project_id]) + "#invite-member")
 
 
 def create_task_view(request, project_id):
     project = get_object_or_404(Project, pk=project_id)
     membership = ProjectMembership.objects.get(project=project, user=request.user)
+    anchor = "create-task"
 
-    if not membership or membership.role != "O":
-        messages.error(request, "You do not have permission to create a task.", extra_tags="create-task")
+    if not membership or (membership.role != "O" and membership.role != "A"):
+        error_message = "You don't have permission to create tasks"
+        return render(request, "app/project.html", project_context(project, request.user, error_message, anchor))
+
+    if request.method != "POST":
         return redirect(reverse("app:project", args=[project_id]) + "#create-task")
 
-    if request.method == "POST":
-        title = request.POST.get("title").strip()
-        user_id = request.POST.get("user_id")
-        deadline = request.POST.get("deadline")
+    title = request.POST.get("title").strip()
+    user_id = request.POST.get("user_id")
+    deadline = request.POST.get("deadline")
 
-        if not user_id:
-            messages.error(request, "Please select a user.", extra_tags="create-task")
-            return redirect(reverse("app:project", args=[project_id]) + "#create-task")
+    if not user_id:
+        error_message = "User_id is required"
+        return render(request, "app/project.html", project_context(project, request.user, error_message, anchor))
 
-        if not title:
-            messages.error(request, "Title is required.", extra_tags="create-task")
-            return redirect(reverse("app:project", args=[project_id]) + "#create-task")
+    if not title:
+        error_message = "Title is required"
+        return render(request, "app/project.html", project_context(project, request.user, error_message, anchor))
 
-        if not deadline:
-            messages.error(request, "Deadline is required.", extra_tags="create-task")
-            return redirect(reverse("app:project", args=[project_id]) + "#create-task")
+    if not deadline:
+        error_message = "Deadline is required"
+        return render(request, "app/project.html", project_context(project, request.user, error_message, anchor))
 
-        deadline_dt = datetime.strptime(deadline, "%Y-%m-%d")
-        deadline_dt = timezone.make_aware(deadline_dt)
+    deadline_dt = datetime.strptime(deadline, "%Y-%m-%d")
+    deadline_dt = timezone.make_aware(deadline_dt)
 
-        if deadline_dt < timezone.now():
-            messages.error(request, "Deadline can't be in the past.", extra_tags="create-task")
-            return redirect(reverse("app:project", args=[project_id]) + "#create-task")
+    if deadline_dt < timezone.now():
+        error_message = "Deadline can't be in the past"
+        return render(request, "app/project.html", project_context(project, request.user, error_message, anchor))
 
-        assigned_user = get_object_or_404(User, pk=user_id)
-        Task.objects.create(
-            title=title,
-            description=request.POST.get("description"),
-            status=request.POST.get("status"),
-            deadline=deadline,
-            priority=request.POST.get("priority"),
-            project=project,
-            user=assigned_user,
-        )
-        messages.success(request, "Task created successfully.", extra_tags="create-task")
-        return redirect(reverse("app:project", args=[project_id]) + "#create-task")
+    assigned_user = get_object_or_404(User, pk=user_id)
+    Task.objects.create(
+        title=title,
+        description=request.POST.get("description"),
+        status=request.POST.get("status"),
+        deadline=deadline,
+        priority=request.POST.get("priority"),
+        project=project,
+        user=assigned_user,
+    )
     return redirect(reverse("app:project", args=[project_id]) + "#create-task")
+
+
+def edit_project_view(request, project_id):
+    project = get_object_or_404(Project, id=project_id)
+
+    if request.method != "POST":
+        return render(request, "app/edit_project.html", {"project": project})
+
+    title = request.POST.get("title")
+    description = request.POST.get("description")
+
+    if not title:
+        error_message = "Title is required"
+        return render(request, "app/project.html", project_context(project, request.user, error_message))
+
+    project.title = title
+    project.description = description
+    project.save()
+    return redirect("app:project", project.id)
+
+
+def project_context(project, user, error_message=None, anchor=None):
+    tasks = project.tasks.all()
+    users_in = User.objects.exclude(memberships__project=project).order_by("username")
+    users = User.objects.filter(memberships__project=project)
+    membership = ProjectMembership.objects.get(project=project, user=user)
+    project.user_role = membership.role
+    return {
+        "tasks": tasks,
+        "project": project,
+        "users_in": users_in,
+        "users": users,
+        "error_message": error_message,
+        "anchor": anchor,
+    }

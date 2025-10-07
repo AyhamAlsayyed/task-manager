@@ -39,13 +39,14 @@
                     </tr>
                 </thead>
                 <tbody>
-                    {% for project in recent_projects %}
+                    {% for membership in recent_memberships %}
                         <tr>
-                            <td><a href="{% url 'app:project' project.id %}">{{ project.title }}</a></td>
-                            <td>{{ project.description }}</td>
-                            <td>{{ project.owner }}</td>
-                            <td>{{ h }}</td>
-                            <td>{{ progress }}</td>
+                            <td><a href="{% url 'app:project' membership.project.id %}">
+                                {{ membership.project.title }}</a></td>
+                            <td>{{ membership.project.description }}</td>
+                            <td>{{ membership.project.owner }}</td>
+                            <td>{{ membership.get_role_display }}</td>
+                            <td>{{ membership.progress |floatformat:2 |default:"0" }}%</td>
                         </tr>
                     {% empty %}
                         <tr>
