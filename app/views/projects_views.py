@@ -1,6 +1,7 @@
 from datetime import datetime
 
 from django.contrib.auth.models import User
+from django.db import transaction
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
 from django.utils import timezone
@@ -10,29 +11,29 @@ from app.models import Project, ProjectMembership, Task
 
 def projects_view(request):
     user = request.user
-    if request.method == "POST":
-        title = request.POST.get("title")
-        description = request.POST.get("description")
+    if request.method != "POST":
+        projects = (
+            ProjectMembership.objects.filter(user=user).select_related("project").order_by("-project__created_at")
+        )
 
-        if not title:
-            error_message = "Title is required"
-            return render(request, "app/projects.html", {"error_message": error_message})
+        context = {
+            "projects": projects,
+        }
+        return render(request, "app/projects.html", context)
 
+    title = request.POST.get("title")
+    description = request.POST.get("description")
+
+    if not title:
+        error_message = "Title is required"
+        return render(request, "app/projects.html", {"error_message": error_message})
+
+    with transaction.atomic():
         project = Project(owner=user, title=title, description=description)
         project.save()
         membership = ProjectMembership(user=user, role="O", project=project)
         membership.save()
-        return redirect(reverse("projects_view"))
-
-    projects = Project.objects.filter(memberships__user=user).order_by("-created_at")
-    for project in projects:
-        membership = ProjectMembership.objects.get(project=project, user=user)
-        project.user_role = membership.get_role_display()
-
-    context = {
-        "projects": projects,
-    }
-    return render(request, "app/projects.html", context)
+    return redirect(reverse("app:projects"))
 
 
 def project_view(request, project_id):
@@ -108,6 +109,25 @@ def create_task_view(request, project_id):
         user=assigned_user,
     )
     return redirect(reverse("app:project", args=[project_id]) + "#create-task")
+
+
+def edit_project_view(request, project_id):
+    project = get_object_or_404(Project, id=project_id)
+
+    if request.method != "POST":
+        return render(request, "app/edit_project.html", {"project": project})
+
+    title = request.POST.get("title")
+    description = request.POST.get("description")
+
+    if not title:
+        error_message = "Title is required"
+        return render(request, "app/project.html", project_context(project, request.user, error_message))
+
+    project.title = title
+    project.description = description
+    project.save()
+    return redirect("app:project", project.id)
 
 
 def project_context(project, user, error_message=None, anchor=None):

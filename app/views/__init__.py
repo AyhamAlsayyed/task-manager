@@ -6,6 +6,7 @@ from .profile_views import edit_profile_view, profile_view
 from .projects_views import (
     add_member_view,
     create_task_view,
+    edit_project_view,
     project_view,
     projects_view,
 )

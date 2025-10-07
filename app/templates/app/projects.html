@@ -47,11 +47,12 @@
                 <tbody>
                     {% for project in projects %}
                         <tr>
-                            <td><a href="{% url 'app:project' project.id %}">{{ project.title }}</a></td>
-                            <td>{{ project.description }}</td>
-                            <td>{{ project.created_at|date:"Y-m-d" }}</td>
-                            <td>{{ project.tasks.count }}</td>
-                            <td>{{ project.user_role }}</td>
+                            <td><a href="{% url 'app:project' project.project.id %}">
+                                {{ project.project.title }}</a></td>
+                            <td>{{ project.project.description }}</td>
+                            <td>{{ project.project.created_at|date:"Y-m-d" }}</td>
+                            <td>{{ project.project.tasks.count }}</td>
+                            <td>{{ project.get_role_display }}</td>
                         </tr>
                     {% empty %}
                     <tr>
