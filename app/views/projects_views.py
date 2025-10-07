@@ -111,6 +111,25 @@ def create_task_view(request, project_id):
     return redirect(reverse("app:project", args=[project_id]) + "#create-task")
 
 
+def edit_project_view(request, project_id):
+    project = get_object_or_404(Project, id=project_id)
+
+    if request.method != "POST":
+        return render(request, "app/edit_project.html", {"project": project})
+
+    title = request.POST.get("title")
+    description = request.POST.get("description")
+
+    if not title:
+        error_message = "Title is required"
+        return render(request, "app/project.html", project_context(project, request.user, error_message))
+
+    project.title = title
+    project.description = description
+    project.save()
+    return redirect("app:project", project.id)
+
+
 def project_context(project, user, error_message=None, anchor=None):
     tasks = project.tasks.all()
     users_in = User.objects.exclude(memberships__project=project).order_by("username")

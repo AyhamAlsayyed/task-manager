@@ -1,28 +1,11 @@
+{% extends "app/base.html" %}
 {% load static %}
-<!DOCTYPE html>
-<html lang="en">
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ project.title }} | Task Manager</title>
-    <link rel="stylesheet" href="{% static 'app/style.css' %}">
+{% block extra_css %}
     <link rel="stylesheet" href="{% static 'app/project.css' %}">
-</head>
+{% endblock %}
 
-<body>
-<header>
-    <h1>{{ project.title }}</h1>
-    <nav>
-        <a href="/">Home</a>
-        <a href="{% url 'app:dashboard' %}">Dashboard</a>
-        <a href="{% url 'app:projects' %}">Projects</a>
-        <a href="{% url 'app:tasks' %}">My Tasks</a>
-        <a href="{% url 'app:profile' %}">
-            <img class="user-avatar" src="{{ user.userprofile.avatar.url }}" alt="Profile">
-        </a>
-    </nav>
-</header>
+{% block content %}
 
 <main>
     <section class="project-details">
@@ -30,6 +13,30 @@
         <p><strong>Owner:</strong> {{ project.owner.username }}</p>
         <p><strong>Description:</strong> {{ project.description|default:"No description" }}</p>
         <p><strong>Created:</strong> {{ project.created_at|date:"Y-m-d" }}</p>
+        {% if project.user_role == "O" %}
+            <section class="edit-project">
+                <div id="edit-project-popup-form" class="edit-project-popup-form">
+                    <form method="post" action="{% url 'app:edit_project' project.id %}">
+                        {% csrf_token %}
+                        <label for="edit_title">Title:</label>
+                        <input type="text" name="title" placeholder="Title" id="edit_title"
+                               value="{{ project.title|default:'' }}" required>
+                        <label for="edit_description">Description:</label>
+                        <input type="text" name="description" placeholder="Description" id="edit_description"
+                            value="{{ project.description|default:'' }}">
+                        {% if messages %}
+                            <p style="color: {% if message.tags == 'error' %}red{% else %}green{% endif %};">
+                              {{ message }}
+                            </p>
+                        {% endif %}
+                        <button type="submit">Save Changes</button>
+                        <button type="button" id="cancelEditPopup">Cancel</button>
+                    </form>
+                </div>
+
+                <button id="togglePopup">Edit Project</button>
+            </section>
+        {% endif %}
     </section>
 
     <section class="task-list">
@@ -143,7 +150,7 @@
             <form method="post" action="{% url 'app:add_member' project.id %}">
                 {% csrf_token %}
                 <label for="user_id">Select User:</label>
-                <select name="user_id" id="user_id">
+                <select name="member_id" id="member_id">
                     <option value="" disabled selected>Select a user</option>
                     {% for user in users_in %}
                         <option value="{{ user.id }}">{{ user.username }}</option>
@@ -157,18 +164,29 @@
                 </select>
 
                 <button type="submit">Invite</button>
-                <button type="button" id="cancelPopup">Cancel</button>
             </form>
         </div>
     </section>
     {% endif %}
 </main>
-    {% if anchor %}
+
     <script>
-      window.location.hash = "{{ anchor }}";
+        {% if anchor %}
+            window.location.hash = "{{ anchor }}";
+        {% endif %}
+
+        const togglebtn = document.getElementById("togglePopup");
+        const editprojectpopupform = document.getElementById("edit-project-popup-form");
+        const cancelBtn = document.getElementById("cancelEditPopup");
+
+        togglebtn.addEventListener("click", () => {
+            editprojectpopupform.classList.add("show")
+            togglebtn.classList.add("hide")
+        });
+
+        cancelBtn.addEventListener("click", () => {
+            editprojectpopupform.classList.remove("show")
+            togglebtn.classList.remove("hide")
+        })
     </script>
-    {% endif %}
-
-</body>
-
-</html>
+{% endblock %}
