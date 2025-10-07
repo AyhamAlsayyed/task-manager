@@ -102,7 +102,7 @@ def create_task_view(request, project_id):
     Task.objects.create(
         title=title,
         description=request.POST.get("description"),
-        status=request.POST.get("status"),
+        status="To Do",
         deadline=deadline,
         priority=request.POST.get("priority"),
         project=project,
@@ -127,7 +127,7 @@ def edit_project_view(request, project_id):
     project.title = title
     project.description = description
     project.save()
-    return redirect("app:project", project.id)
+    return redirect(reverse("app:project", args=[project_id]))
 
 
 def project_context(project, user, error_message=None, anchor=None):

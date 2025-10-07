@@ -89,6 +89,10 @@ footer p {
     margin: 5px 0;
 }
 
+.error_message {
+    color: red;
+}
+
 .sr-only {
   position: absolute;
   width: 1px;

@@ -10,6 +10,7 @@
 <main>
     <section class="project-details">
         <h2>Project Details</h2>
+        <p><strong>Title:</strong> {{ project.title }}</p>
         <p><strong>Owner:</strong> {{ project.owner.username }}</p>
         <p><strong>Description:</strong> {{ project.description|default:"No description" }}</p>
         <p><strong>Created:</strong> {{ project.created_at|date:"Y-m-d" }}</p>
@@ -20,7 +21,7 @@
                         {% csrf_token %}
                         <label for="edit_title">Title:</label>
                         <input type="text" name="title" placeholder="Title" id="edit_title"
-                               value="{{ project.title|default:'' }}" required>
+                               value="{{ project.title|default:'' }}">
                         <label for="edit_description">Description:</label>
                         <input type="text" name="description" placeholder="Description" id="edit_description"
                             value="{{ project.description|default:'' }}">
@@ -49,16 +50,18 @@
                     <th>Status</th>
                     <th>Priority</th>
                     <th>Deadline</th>
+                    <th>assigned User</th>
                 </tr>
             </thead>
             <tbody>
                 {% for task in tasks %}
                     <tr>
-                        <td><a href="">{{ task.title }}</a></td>
+                        <td><a href="{% url 'app:task' task.id %}">{{ task.title }}</a></td>
                         <td>{{ task.description }}</td>
                         <td>{{ task.get_status_display }}</td>
                         <td>{{ task.get_priority_display }}</td>
                         <td>{{ task.deadline|date:"Y-m-d" }}</td>
+                        <td>{{ task.user }}</td>
                     </tr>
                 {% empty %}
                     <tr>
@@ -80,24 +83,17 @@
                 {% csrf_token %}
                 <label for="title">Task Title:</label>
                 <input type="text" name="title" id="title"
-                        value="{{ request.POST.title|default:'' }}" required>
+                        value="{{ request.POST.title|default:'' }}">
 
                 <label for="description">Description:</label>
                 <input type="text" name="description" id="description"
                  value="{{ request.POST.description|default:'' }}">
 
-                <label for="status">Status:</label>
-                <select name="status" id="status">
-                    <option value="todo" selected>To Do</option>
-                    <option value="inprogress">In Progress</option>
-                    <option value="done">Done</option>
-                </select>
-
                 <label for="priority">Priority:</label>
                 <select name="priority" id="priority">
-                    <option value="0" selected>Low</option>
-                    <option value="1">Medium</option>
-                    <option value="2">High</option>
+                    <option value="0" {% if task.priority == 0 %}selected{% endif %}>Low</option>
+                    <option value="1" {% if task.priority == 1 %}selected{% endif %}>Medium</option>
+                    <option value="2" {% if task.priority == 2 %}selected{% endif %}>High</option>
                 </select>
 
                 <label for="deadline">Deadline:</label>
