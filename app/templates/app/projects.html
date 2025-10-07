@@ -1,38 +1,23 @@
+{% extends "app/base.html" %}
 {% load static %}
-<!DOCTYPE html>
-<html lang="en">
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Projects | Task Manager</title>
-    <link rel="stylesheet" href="{% static 'app/style.css' %}">
+{% block extra_css %}
     <link rel="stylesheet" href="{% static 'app/projects.css' %}">
-</head>
+{% endblock %}
 
-<body>
-    <header>
-        <h1>Projects</h1>
-        <nav>
-            <a href="/">Home</a>
-            <a href="{% url 'app:dashboard' %}">Dashboard</a>
-            <a href="{% url 'app:tasks' %}">My Tasks</a>
-            <a href="{% url 'app:profile' %}">
-                <img class="user-avatar" src="{{ user.userprofile.avatar.url }}" alt="Profile">
-            </a>
-        </nav>
-    </header>
-
-    <main>
+{% block content %}
+<main>
         <section class="create-project">
             <h2>Create New Project</h2>
             <div id="popupForm" class="popup-form">
                 <form method="post" action="{% url 'app:projects' %}">
                     {% csrf_token %}
                     <label for="title" class="sr-only"></label>
-                    <input type="text" name="title" placeholder="Title" id="title" required>
+                    <input type="text" name="title" placeholder="Title" id="title"
+                           value="{{ request.POST.title|default:'' }}" required>
                     <label for="description" class="sr-only"></label>
-                    <input type="text" name="description" placeholder="Description" id="description" class="description">
+                    <input type="text" name="description" placeholder="Description" id="description" class="description"
+                    value="{{ request.POST.description|default:'' }}">
                     {% if messages %}
                       {% for message in messages %}
                         <p style="color: {% if message.tags == 'error' %}red{% else %}green{% endif %};">
@@ -62,11 +47,12 @@
                 <tbody>
                     {% for project in projects %}
                         <tr>
-                            <td><a href="{% url 'app:project' project.id %}">{{ project.title }}</a></td>
-                            <td>{{ project.description }}</td>
-                            <td>{{ project.created_at|date:"Y-m-d" }}</td>
-                            <td>{{ project.tasks.count }}</td>
-                            <td>{{ project.user_role }}</td>
+                            <td><a href="{% url 'app:project' project.project.id %}">
+                                {{ project.project.title }}</a></td>
+                            <td>{{ project.project.description }}</td>
+                            <td>{{ project.project.created_at|date:"Y-m-d" }}</td>
+                            <td>{{ project.project.tasks.count }}</td>
+                            <td>{{ project.get_role_display }}</td>
                         </tr>
                     {% empty %}
                     <tr>
@@ -92,6 +78,4 @@
             togglebtn.classList.remove("hide")
         })
     </script>
-</body>
-
-</html>
+{% endblock %}

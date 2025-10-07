@@ -14,7 +14,7 @@ def login_view(request):
         return render(
             request,
             "app/login.html",
-            {"form": form, "error_message": "User name or Password are incorrect."},
+            {"form": form, "error_message": "User name or Password are incorrect.", "request": request},
         )
 
     user = form.get_user()

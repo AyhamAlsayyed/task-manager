@@ -1,9 +1,3 @@
-main {
-    padding: 20px;
-    max-width: 1000px;
-    margin: auto;
-}
-
 .create-project {
     background: white;
     padding: 20px;
@@ -120,16 +114,4 @@ a {
 
 .popup-form button:hover {
     background: #272b34;
-}
-
-
-.sr-only {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  padding: 0;
-  margin: -1px;
-  overflow: hidden;
-  clip: rect(0, 0, 0, 0);
-  border: 0;
 }

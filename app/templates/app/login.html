@@ -15,7 +15,8 @@
             {% csrf_token %}
             {% if error_message %}<p class="error_message" style="color:red; font-weight:bold;">{{ error_message }}</p>{% endif %}
             <label for="username" class="sr-only"></label>
-            <input type="text" placeholder="UserName" id="username" name="username" required>
+            <input type="text" placeholder="UserName" id="username" name="username"
+                   value="{{ request.POST.username|default:'' }}" required>
             <label for="password" class="sr-only"></label>
             <input type="password" placeholder="Password" id="password" name="password" required>
             <div class="login"><button type="submit">Log In</button></div>
