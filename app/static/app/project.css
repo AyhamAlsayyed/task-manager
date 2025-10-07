@@ -226,10 +226,6 @@ a {
     background: #272b34;
 }
 
-.error_message {
-    color: red;
-}
-
 .edit-project-popup-form {
     display: none;
     margin: 1rem 0;
