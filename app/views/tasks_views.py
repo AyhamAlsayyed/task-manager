@@ -5,7 +5,7 @@ from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
 from django.utils import timezone
 
-from app.models import Task
+from app.models import Comment, Task
 
 
 def tasks_view(request):
@@ -44,10 +44,12 @@ def tasks_view(request):
 def task_view(request, task_id):
     task = get_object_or_404(Task, pk=task_id)
     users_in = task.project.members.all()
+    comments = task.comments.select_related("author").order_by("-created_at")
 
     context = {
         "task": task,
         "users_in": users_in,
+        "comments": comments,
     }
     return render(request, "app/task.html", context)
 
@@ -100,3 +102,25 @@ def task_context(task, error_message=None, anchor=None):
         "anchor": anchor,
     }
     return context
+
+
+def create_comment_view(request, task_id):
+    task = get_object_or_404(Task, pk=task_id)
+    anchor = "create-comment"
+    if request.method != "POST":
+        return render(request, "app/task.html", task_context(task, None, anchor="create"))
+
+    comment_text = request.POST.get("comment_text")
+
+    if not comment_text:
+        error_message = "Comment text is required"
+        return render(request, "app/task.html", task_context(task, error_message, anchor))
+
+    Comment.objects.create(task=task, author=request.user, comment=comment_text)
+    return redirect(reverse("app:task", args=[task_id]))
+
+
+def delete_comment_view(request, task_id, comment_id):
+    comment = get_object_or_404(Comment, pk=comment_id)
+    comment.delete()
+    return redirect(reverse("app:task", args=[task_id]))

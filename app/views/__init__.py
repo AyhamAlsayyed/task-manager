@@ -10,4 +10,10 @@ from .projects_views import (
     project_view,
     projects_view,
 )
-from .tasks_views import edit_task_view, task_view, tasks_view
+from .tasks_views import (
+    create_comment_view,
+    delete_comment_view,
+    edit_task_view,
+    task_view,
+    tasks_view,
+)

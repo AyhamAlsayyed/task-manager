@@ -83,7 +83,7 @@
                 {% csrf_token %}
                 <label for="title">Task Title:</label>
                 <input type="text" name="title" id="title"
-                        value="{{ request.POST.title|default:'' }}">
+                        value="{{ request.POST.title|default:'' }}" required>
 
                 <label for="description">Description:</label>
                 <input type="text" name="description" id="description"
