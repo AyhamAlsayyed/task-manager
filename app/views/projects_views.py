@@ -1,6 +1,8 @@
 from datetime import datetime
 
+from django.conf import settings
 from django.contrib.auth.models import User
+from django.core.mail import send_mail
 from django.db import transaction
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
@@ -97,17 +99,26 @@ def create_task_view(request, project_id):
     if deadline_dt < timezone.now():
         error_message = "Deadline can't be in the past"
         return render(request, "app/project.html", project_context(project, request.user, error_message, anchor))
+    with transaction.atomic():
+        assigned_user = get_object_or_404(User, pk=user_id)
+        Task.objects.create(
+            title=title,
+            description=request.POST.get("description"),
+            status="To Do",
+            deadline=deadline,
+            priority=request.POST.get("priority"),
+            project=project,
+            user=assigned_user,
+        )
 
-    assigned_user = get_object_or_404(User, pk=user_id)
-    Task.objects.create(
-        title=title,
-        description=request.POST.get("description"),
-        status="To Do",
-        deadline=deadline,
-        priority=request.POST.get("priority"),
-        project=project,
-        user=assigned_user,
-    )
+        if assigned_user and assigned_user.email:
+            send_mail(
+                subject="New Task assigned",
+                message=f"You have a new task: {title} in project {project.title}",
+                from_email=settings.EMAIL_HOST_USER,
+                recipient_list=[assigned_user.email],
+                fail_silently=False,
+            )
     return redirect(reverse("app:project", args=[project_id]) + "#create-task")
 
 
